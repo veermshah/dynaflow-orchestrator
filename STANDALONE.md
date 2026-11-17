@@ -1,6 +1,6 @@
 # Standalone repository
 
-Intended destination: https://github.com/veermshah/dynaflow-orchestrator
+Repository: https://github.com/veermshah/dynaflow-orchestrator
 
 This checkout contains the completed dynaflow-orchestrator project and its measured evidence. Start with [README.md](README.md). Model weights and secrets are not included.
 
