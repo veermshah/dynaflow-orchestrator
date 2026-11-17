@@ -4,6 +4,30 @@ A working same-model comparison of solo reasoning, a fixed planner → solver �
 
 The completion pass uses **real Qwen3-0.6B Q4_K_M CPU inference**, substituting for the paper's trained 27B backbone. Bundled public benchmark records comprise six AIME 2024 and six HotpotQA distractor-validation questions. This is a small prompt-based reproduction of executable orchestration, not a reproduction of the trained paper system or its full benchmark score.
 
+## GitHub Pages recorded-results explorer
+
+The static [docs/index.html](docs/index.html) app lets visitors switch between the **recorded public subset** and **separate recorded calibration**, compare every arm's actual tokens per solved task, and inspect every saved task, emitted workflow, full-context handoff, model response and finish reason. It never runs a model, executes a workflow, reads an API key or presents saved output as live inference. Invalid model-generated plans and infrastructure/provider failures are separate. Raw source records, initial scoring snapshots, data/model provenance and SHA-256 hashes are downloadable.
+
+Build and preview from this standalone repository root:
+
+```bash
+python build_pages.py
+python -m http.server 8080 --bind 127.0.0.1 --directory docs
+```
+
+Open `http://127.0.0.1:8080/`. The build uses **only Python's standard library**, makes no network or inference calls, and copies the finalized measured records byte-for-byte. `pages/` contains editable HTML/CSS/JavaScript source; `docs/` is the complete generated publish directory, including `.nojekyll`. All runtime assets are local relative paths, so the site also works under a project prefix such as `/dynaflow-orchestrator/`. Use HTTP rather than opening `file://` because browsers restrict JSON fetching from local files. There is no server-side/API component or paid dependency for the static explorer.
+
+For GitHub Pages, after the repository and files are available on GitHub:
+
+1. Include the generated `docs/` folder on **main**.
+2. Open **Settings → Pages → Build and deployment**.
+3. Select **Deploy from a branch**, branch **main**, folder **/docs**, then save.
+4. Open the Pages URL that GitHub reports. A repository/project site normally uses `https://OWNER.github.io/REPOSITORY/`; substitute the actual owner/repository, not a fabricated deployment URL.
+
+The files here are ready for that configuration; generating them does not create a repository, push changes, enable Pages or establish a public deployment. Regenerate `docs/` whenever measured source records, documentation or templates change. A repeat build with unchanged inputs produces identical files; `docs/data/manifest.json` records the exact source bytes and hashes. Use `python build_pages.py --output /tmp/dynaflow-pages` for an isolated build.
+
+Optional browser verification (development-only dependencies, not required by visitors/build): install Playwright and its Chromium browser, or use a system `chromium`, then run `python smoke_pages.py`. The test hosts an isolated copy under `/dynaflow-orchestrator/`, verifies local HTTP assets, official/calibration values and budgets, selectors and full-context trace inspection, checks mobile page overflow, and rejects JavaScript errors or external runtime requests. The build-session test passed on desktop and a 390px mobile viewport. Screenshots go to ignored `.pages-preview/`. No LLM/server inference is invoked by this test.
+
 ## Setup and quick smoke test
 
 Python 3.10+; the harness itself uses the standard library, with no pip requirements. From the repository root:
